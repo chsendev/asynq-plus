@@ -104,3 +104,39 @@ func SayHello(ctx context.Context, name string, price float64) (string, float64,
 	log.Println("sayHello: ", name)
 	return "sayHello: " + name, price * 10, nil
 }
+
+func TestClient2(t *testing.T) {
+	client := NewClient(asynq.RedisClientOpt{Addr: "127.0.0.1:6379"})
+	defer client.Close()
+
+	input := &SayHelloInput{
+		Name:  "chsendev",
+		Price: 30,
+	}
+
+	var ouput SayHelloOutput
+
+	err := client.Enqueue(context.Background(), SayHello2, input).Get(&ouput)
+	fmt.Println(ouput, err)
+}
+
+type SayHelloInput struct {
+	Name  string
+	Price float64
+}
+
+type SayHelloOutput struct {
+	Name  string
+	Price float64
+}
+
+func SayHello2(ctx context.Context, input *SayHelloInput) (*SayHelloOutput, error) {
+	log.Println("start")
+	time.Sleep(time.Second * 3)
+	log.Println("input: ", input)
+	output := &SayHelloOutput{
+		Name:  "sayHello: " + input.Name,
+		Price: input.Price * 100,
+	}
+	return output, nil
+}

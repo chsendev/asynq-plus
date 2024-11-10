@@ -25,7 +25,7 @@ func (mux *ServeFuture) HandleFunc(handler any) {
 	if handler == nil {
 		panic("asynq: nil handler")
 	}
-	mux.Handle(GetFunctionName(handler), asynq.HandlerFunc(func(ctx context.Context, task *asynq.Task) error {
+	mux.Handle(getFunctionName(handler), asynq.HandlerFunc(func(ctx context.Context, task *asynq.Task) error {
 		var p Payload
 		err := json.Unmarshal(task.Payload(), &p)
 		if err != nil {

@@ -41,7 +41,7 @@ func (c *Client) Enqueue(ctx context.Context, fun any, paramsOrOpts ...any) Futu
 	if reflect.TypeOf(fun).Kind() != reflect.Func {
 		return newFutureErr(fmt.Errorf("the second parameter requires a transfer function"))
 	}
-	typeName := GetFunctionName(fun)
+	typeName := getFunctionName(fun)
 	paramMap := make(map[string]json.RawMessage)
 	optMap := make(map[asynq.Option]struct{})
 	for i := range c.opts {

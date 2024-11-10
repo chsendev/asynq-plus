@@ -33,7 +33,7 @@ func TestServer(t *testing.T) {
 		},
 	)
 
-	mux := NewServeFuture()
+	mux := asynqplus.NewServeFuture()
 	mux.HandleFunc(SayHello)
 	// ...register other handlers...
 	if err := srv.Run(mux); err != nil {
@@ -45,7 +45,7 @@ func TestServer(t *testing.T) {
 4、使用客户端执行任务，并获取结果
 ```go
 func TestClient(t *testing.T) {
-	client := NewClient(asynq.RedisClientOpt{Addr: "127.0.0.1:6379"})
+	client := asynqplus.NewClient(asynq.RedisClientOpt{Addr: "127.0.0.1:6379"})
 	defer client.Close()
 
 	var result string
@@ -56,4 +56,32 @@ func TestClient(t *testing.T) {
 }
 ```
 
-更多高级功能请参考：https://github.com/hibiken/asynq/wiki
+## 注意事项
+1、随着代码的更新，工作流任务方法可能会修改入参、出参，因此为了能够兼容之前的任务，建议使用以下写法：
+```go
+type SayHelloInput struct {
+    Name  string
+    Price float64
+}
+
+type SayHelloOutput struct {
+    Name  string
+    Price float64
+}
+
+func SayHello2(ctx context.Context, input *SayHelloInput) (*SayHelloOutput, error) {
+    log.Println("start")
+    time.Sleep(time.Second * 3)
+    log.Println("input: ", input)
+    output := &SayHelloOutput{
+        Name:  "sayHello: " + input.Name,
+        Price: input.Price * 100,
+    }
+    return output, nil
+}
+```
+2、请保证入参结构体和出参结构体字段都是Public级别的，已保证能够正确的序列化
+
+3、请不要随意更换工作流任务方法名，导致不兼容的情况
+
+更多用法请参考：https://github.com/hibiken/asynq/wiki

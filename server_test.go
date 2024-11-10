@@ -24,6 +24,7 @@ func TestServer(t *testing.T) {
 
 	mux := NewServeFuture()
 	mux.HandleFunc(SayHello)
+	mux.HandleFunc(SayHello2)
 	// ...register other handlers...
 	if err := srv.Run(mux); err != nil {
 		log.Fatalf("could not run server: %v", err)

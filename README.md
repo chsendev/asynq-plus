@@ -80,7 +80,7 @@ func SayHello2(ctx context.Context, input *SayHelloInput) (*SayHelloOutput, erro
     return output, nil
 }
 ```
-2、请保证入参结构体和出参结构体字段都是Public级别的，已保证能够正确的序列化
+2、请保证入参结构体和出参结构体字段都是Public级别的，已确保能够被正确的序列化
 
 3、请不要随意更换工作流任务方法名，导致不兼容的情况
 
